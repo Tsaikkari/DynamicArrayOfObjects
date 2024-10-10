@@ -1,5 +1,3 @@
-// DynamicArraysAndObjects.cpp : This file contains the 'main' function. Program execution begins and ends there.
-
 #include <iostream>
 
 using namespace std;
@@ -47,6 +45,33 @@ void validateInput(int size, int newSize = 100) {
 	if (newSize <= size) throw "Array size is not valid";
 }
 
+void printByGender(Student* students, Student* femaleStudents, Student* maleStudents, int size, char gender) {
+	int pos = 0;
+
+	if (gender == 'f') {
+		for (int i = 0; i < size; i++) {
+			if (students[i].Gender == 'f') {
+				femaleStudents[pos] = students[i];
+				pos++;
+			}
+		}
+
+		printStudents(femaleStudents, pos);
+		delete[] femaleStudents;
+	}
+	else {
+		for (int i = 0; i < size; i++) {
+			if (students[i].Gender == 'm') {
+				maleStudents[pos] = students[i];
+				pos++;
+			}
+		}
+
+		printStudents(maleStudents, pos);
+		delete[] maleStudents;
+	}
+}
+
 int main()
 {
 	try {
@@ -54,17 +79,25 @@ int main()
 		cout << "Number of students: " << endl;
 		cin >> size;
 		validateInput(size);
-	
+
 		Student* students = new Student[size];
 		enterStudents(students, 0, size);
+		cout << "All students: " << endl;
+		printStudents(students, size);
+
+		Student* femaleStudents = new Student[size];
+		Student* maleStudents = new Student[size];
+
+		cout << "Female students: " << endl;
+		printByGender(students, femaleStudents, maleStudents, size, 'f');
 
 		char choice;
 		cout << "Do you want to add more students? y/n ";
 		cin >> choice;
 
 		if (choice == 'n' || choice == 'N') {
-			delete[] students; 
-			return 0; 
+			delete[] students;
+			return 0;
 		}
 
 		int newSize;
@@ -83,10 +116,15 @@ int main()
 		students = newStudents;
 
 		enterStudents(students, size, newSize);
+		cout << "All students: " << endl;
 		printStudents(students, newSize);
 
-		delete[] students;
+		Student* renewFStudents = new Student[newSize];
+		Student* renewMStudents = new Student[newSize];
+		cout << "Male students: " << endl;
+		printByGender(students, renewFStudents, renewMStudents, newSize, 'm');
 
+		delete[] students;
 	}
 	catch (const char* txtException) {
 		cout << "Exception: " << txtException << endl;
@@ -94,7 +132,7 @@ int main()
 	catch (...) {
 		cout << "Exception happened";
 	}
-	
+
 	return 0;
 }
 
